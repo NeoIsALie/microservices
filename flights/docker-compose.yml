@@ -12,6 +12,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   adminer:
     image: adminer:latest
