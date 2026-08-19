@@ -1,8 +1,10 @@
 from typing import Type, Any
 
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.orm import Session, aliased
 
-from flights.models.flight import Flight
+from flights.models import Flight, Airport
+from flights.schemas.flight import FlightResponse
 
 
 class FlightCrud:
@@ -13,12 +15,55 @@ class FlightCrud:
             self,
             offset: int = 0,
             limit: int = 100,
-    ) -> list[Type[Flight]]:
-        airports = self._db.query(Flight)
-        return airports.offset(offset).limit(limit).all()
+    ) -> list[Flight]:
+        FromAirport = aliased(Airport)
+        ToAirport = aliased(Airport)
+        stmt = (
+            select(
+                Flight.flight_number.label("flight_number"),
+                FromAirport.name.label("from_airport"),
+                ToAirport.name.label("to_airport"),
+                Flight.datetime.label("date"),
+            )
+            .join(
+                FromAirport,
+                Flight.from_airport_id == FromAirport.id,
+            )
+            .join(
+                ToAirport,
+                Flight.to_airport_id == ToAirport.id,
+            )
+            .limit(limit)
+            .offset(offset)
+        )
+        result = [
+            FlightResponse(**row)
+            for row in self._db.execute(stmt).mappings()
+        ]
+        return result
 
-    async def get_by_id(self, flight_id: int) -> Flight | None:
-        return self._db.query(Flight).filter(Flight.id == flight_id).first()
+    async def get_by_id(self, flight_id: int) -> FlightResponse | None:
+        FromAirport = aliased(Airport)
+        ToAirport = aliased(Airport)
+        stmt = (
+            select(
+                Flight.flight_number.label("flight_number"),
+                FromAirport.name.label("from_airport"),
+                ToAirport.name.label("to_airport"),
+                Flight.datetime.label("date"),
+            )
+            .join(
+                FromAirport,
+                Flight.from_airport_id == FromAirport.id,
+            )
+            .join(
+                ToAirport,
+                Flight.to_airport_id == ToAirport.id,
+            )
+            .where(Flight.flight_number == flight_id)
+        )
+        result = self._db.execute(stmt).first().mappings()
+        return FlightResponse(**result)
 
     async def create(self, airport: Flight) -> Flight | None:
         try:

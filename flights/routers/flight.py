@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from flights.cruds.flights import FlightCrud
-from flights.schemas.flight import Flight
+from flights.schemas.flight import Flight, FlightResponse
 from flights.services.flights import FlightService
 from flights.utils.database import get_db
 
@@ -36,7 +36,7 @@ router = APIRouter(
 @router.get(
     path="/",
     status_code=status.HTTP_200_OK,
-    response_model=list[Flight],
+    response_model=list[FlightResponse],
     responses={
         status.HTTP_200_OK: {"description": "OK"},
     }
@@ -55,7 +55,7 @@ async def get_all_flights(
 @router.get(
     path="/{flight_id}",
     status_code=status.HTTP_200_OK,
-    response_model=Flight,
+    response_model=FlightResponse,
     responses={
         status.HTTP_200_OK: {"description": "OK"},
         status.HTTP_404_NOT_FOUND: {"description": "Not found"},
