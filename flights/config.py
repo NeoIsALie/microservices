@@ -1,19 +1,41 @@
-from pydantic_settings import BaseSettings
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from dotenv import load_dotenv
 
-load_dotenv()  # Explicitly load the .env file
+load_dotenv()
+
+class ServiceSettings(BaseModel):
+    host: str = None
+    port: int = None
+    log_level: str = None
+    reload: bool = None
+
+
+class DatabaseSettings(BaseModel):
+    user: str = None
+    password: str = None
+    host: str = None
+    port: int = None
+    database: str = None
+
+
+class JWKSettings(BaseModel):
+  host: str = None
+  port: int = None
+  kid: str = None
 
 
 class Settings(BaseSettings):
-    POSTGRES_HOSTNAME: str
-    POSTGRES_USER: str = "user"
-    POSTGRES_PASSWORD: str = "password"
-    POSTGRES_DB: str = "flights"
-    DATABASE_PORT: int = 5432
-    API_KEY: str
 
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_nested_delimiter="__"
+    )
+
+    service: ServiceSettings = ServiceSettings()
+    db: DatabaseSettings = DatabaseSettings()
+    jwk: JWKSettings = JWKSettings()
+
 
 
 settings = Settings()

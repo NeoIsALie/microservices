@@ -104,3 +104,19 @@ async def update_flight(
         flight_id=flight_id,
         **flight_update
     )
+
+
+@router.delete(
+    path="/{flight_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
+    responses={
+        status.HTTP_204_NO_CONTENT: {"description": "OK"},
+        status.HTTP_404_NOT_FOUND: {"description": "Not found"},
+    }
+)
+async def delete_flight(
+    flight_service: Annotated[FlightService, Depends(get_flight_service)],
+    flight_id: int,
+):
+    return await flight_service.delete(flight_id=flight_id)
