@@ -1,20 +1,19 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from flights.config import settings
-from fastapi_utils.guid_type import setup_guids_postgresql
+from flights.config import get_settings
 
 
+settings = get_settings()
 
 POSTGRES_URL = (
-    f"postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOSTNAME}:{settings.DATABASE_PORT}/{settings.POSTGRES_DB}"
+    f"postgresql://{settings.database.username}:{settings.database.password}@{settings.database.host}:{settings.database.port}/{settings.database.db_name}"
 )
 
 
 engine = create_engine(
     POSTGRES_URL, echo=True
 )
-setup_guids_postgresql(engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

@@ -4,8 +4,9 @@ from fastapi import requests
 from jwcrypto.jwt import JWT
 from jwcrypto.jwk import JWKSet, JWK
 
-from flights.config import settings
+from flights.config import get_settings
 
+settings = get_settings()
 
 def __jwks_auth_url(
     host=settings.jwk.host,

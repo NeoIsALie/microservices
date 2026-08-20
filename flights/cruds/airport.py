@@ -1,5 +1,6 @@
 from typing import Type, Any
 
+from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
 
 from flights.models.airport import Airport
@@ -13,12 +14,13 @@ class AirportCrud:
             self,
             offset: int = 0,
             limit: int = 100,
-    ) -> list[Type[Airport]]:
-        airports = self._db.query(Airport)
-        return airports.offset(offset).limit(limit).all()
+    ):
+        stmt = select(Airport).offset(offset).limit(limit)
+        return self._db.execute(stmt).all()
 
     async def get_by_id(self, airport_id: int) -> Airport | None:
-        return self._db.query(Airport).filter(Airport.id == airport_id).first()
+        stmt = select(Airport).where(Airport.id == airport_id)
+        return self._db.execute(stmt).first()
 
     async def create(self, airport: Airport) -> Airport | None:
         try:
@@ -46,7 +48,8 @@ class AirportCrud:
 
 
     async def delete(self, airport: Airport) -> None:
-        self._db.delete(airport)
+        stmt = delete(Airport).where(Airport.id == airport.id)
+        self._db.execute(stmt)
         self._db.commit()
 
     async def filter(self, filters: dict[str, Any]) -> list[Type[Airport]]:

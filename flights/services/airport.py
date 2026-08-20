@@ -22,6 +22,7 @@ class AirportService:
         airport = await self._crud.get_by_id(airport_id)
         if not airport:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Airport not found")
+        return airport
 
     async def create(self, airport: Airport):
         return await self._crud.create(airport)

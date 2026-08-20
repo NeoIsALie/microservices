@@ -26,6 +26,7 @@ def __payload_to_dto(raw_payload: dict) -> UserPayloadDTO:
         )
     return payload
 
+
 def get_current_user(
     token: HTTPAuthorizationCredentials | None = Depends(http_bearer)
 ) -> UserPayloadDTO:

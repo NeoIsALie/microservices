@@ -20,8 +20,10 @@ class FlightService:
 
     async def get_by_id(self, flight_id: int):
         flight = await self._crud.get_by_id(flight_id)
+        print(flight)
         if not flight:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Flight not found")
+        return flight
 
     async def create(self, flight: Flight):
         return await self._crud.create(flight)

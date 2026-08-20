@@ -12,17 +12,17 @@ class ServiceSettings(BaseModel):
 
 
 class DatabaseSettings(BaseModel):
-    user: str = None
+    username: str = None
     password: str = None
     host: str = None
     port: int = None
-    database: str = None
+    db_name: str = None
 
 
 class JWKSettings(BaseModel):
-  host: str = None
-  port: int = None
-  kid: str = None
+    host: str = None
+    port: int = None
+    kid: str = None
 
 
 class Settings(BaseSettings):
@@ -33,9 +33,11 @@ class Settings(BaseSettings):
     )
 
     service: ServiceSettings = ServiceSettings()
-    db: DatabaseSettings = DatabaseSettings()
+    database: DatabaseSettings = DatabaseSettings()
     jwk: JWKSettings = JWKSettings()
 
 
 
-settings = Settings()
+def get_settings():
+    settings = Settings()
+    return settings

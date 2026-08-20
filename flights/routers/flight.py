@@ -1,4 +1,4 @@
-from idlelib.query import Query
+from fastapi import Query
 from typing import Annotated, Any
 
 from fastapi import Depends, APIRouter, Response
@@ -44,7 +44,7 @@ router = APIRouter(
 async def get_all_flights(
     flight_service: Annotated[FlightService, Depends(get_flight_service)],
     page: Annotated[int, Query(ge=1)] = 1,
-    size: Annotated[int, Query(ge=100)] = 100
+    size: Annotated[int, Query(ge=1)] = 100
 ):
     return await flight_service.get_all(
     page=page,

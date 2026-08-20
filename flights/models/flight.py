@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from flights.utils.database import Base
 
 class Flight(Base):
-    __tablename__ = 'flights'
+    __tablename__ = 'flight'
     __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)

@@ -1,7 +1,6 @@
-from idlelib.query import Query
 from typing import Annotated, Any
 
-from fastapi import Depends, APIRouter, Response
+from fastapi import Depends, APIRouter, Response, Query
 from sqlalchemy.orm import Session
 from starlette import status
 
@@ -9,6 +8,9 @@ from flights.cruds.airport import AirportCrud
 from flights.schemas.airport import Airport
 from flights.services.airport import AirportService
 from flights.utils.database import get_db
+
+print(Query)
+print(Query.__module__)
 
 
 def get_airports_crud() -> AirportCrud:
@@ -44,7 +46,7 @@ router = APIRouter(
 async def get_all_airports(
     airport_service: Annotated[AirportService, Depends(get_airport_service)],
     page: Annotated[int, Query(ge=1)] = 1,
-    size: Annotated[int, Query(ge=100)] = 100
+    size: Annotated[int, Query(ge=1)] = 100
 ):
     return await airport_service.get_all(
     page=page,

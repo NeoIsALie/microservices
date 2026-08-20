@@ -7,7 +7,7 @@ from uuid import UUID
 
 class Flight(BaseModel):
     flight_number: Annotated[str, constr(max_length=20)]
-    datetime: datetime
+    date: datetime
     from_airport_id: int
     to_airport_id: int
     price: int
@@ -18,6 +18,7 @@ class FlightResponse(BaseModel):
     from_airport: Annotated[str, Query(max_length=255)]
     to_airport: Annotated[str, Query(max_length=255)]
     date: datetime
+    price: int
 
 
 class FlightInfo(Flight):
