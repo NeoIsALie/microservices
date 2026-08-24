@@ -9,7 +9,7 @@ from tickets.models.ticket import Ticket
 
 
 class TicketService:
-    def __init__(self, db: Session, crud: TicketCrud):
+    def __init__(self, db: Session, crud: Type[TicketCrud]):
         self._crud: TicketCrud = crud(db)
 
     async def get_all(
