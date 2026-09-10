@@ -1,10 +1,10 @@
-from typing import Type, Any
+from typing import Any
 from uuid import UUID
 
 from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
 
-from tickets.models.ticket import Ticket
+from tickets_service.models.ticket import Ticket
 
 
 class TicketCrud:
@@ -13,10 +13,12 @@ class TicketCrud:
 
     async def get_all(
         self,
+        filters: dict[str, Any],
         offset: int = 0,
         limit: int = 100,
     ):
-        stmt = select(Ticket).offset(offset).limit(limit)
+        tickets = select(Ticket).offset(offset).limit(limit)
+        stmt = await self.filter(tickets, filters)
         return self._db.execute(stmt).all()
 
     async def get_by_uuid(self, ticket_uid: UUID) -> Ticket | None:
@@ -54,10 +56,11 @@ class TicketCrud:
         self._db.execute(stmt)
         self._db.commit()
 
-    async def filter(self, filters: dict[str, Any]) -> list[Type[Ticket]]:
+    async def filter(self, tickets,  filters: dict[str, Any]):
         conditions = [
             getattr(Ticket, column) == value
             for column, value in filters.items()
             if value
         ]
-        return self._db.query(Ticket).filter(*conditions).all()
+        tickets = tickets.where(*conditions)
+        return tickets

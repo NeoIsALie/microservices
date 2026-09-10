@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, conint
 
-from tickets.enums.enums import PaymentStatus
+from tickets_service.enums.enums import PaymentStatus
 
 
 class TicketResponse(BaseModel):
@@ -15,13 +15,6 @@ class TicketResponse(BaseModel):
     date: datetime
     price: int
     status: PaymentStatus
-
-
-class TicketPurchaseResponse(TicketResponse):
-    paidByMoney: conint(gt=0)
-    paidByBonuses: conint(gt=0)
-    privilege: dict[str, Any]
-
 
 class TicketPaginatedResponse(BaseModel):
     page: Annotated[str, conint(ge=1)]

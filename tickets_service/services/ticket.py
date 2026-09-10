@@ -4,8 +4,8 @@ from uuid import UUID
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from tickets.cruds.tickets import TicketCrud
-from tickets.models.ticket import Ticket
+from tickets_service.cruds.tickets import TicketCrud
+from tickets_service.models.ticket import Ticket
 
 
 class TicketService:
@@ -14,10 +14,11 @@ class TicketService:
 
     async def get_all(
             self,
+            filters: dict[str, Any],
             page: int = 1,
             size: int = 100,
     ):
-        return await self._crud.get_all(offset=(page - 1) * size, limit=size)
+        return await self._crud.get_all(filters=filters, offset=(page - 1) * size, limit=size)
 
     async def get_by_uuid(self, ticket_uid: UUID):
         ticket = await self._crud.get_by_uuid(ticket_uid=ticket_uid)
